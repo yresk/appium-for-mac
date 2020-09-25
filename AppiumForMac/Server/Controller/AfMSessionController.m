@@ -1043,7 +1043,7 @@ const NSTimeInterval kModifierPause = 0.05;
 {
     axPathDebugLog(@"\n\n\n************* findAllUsingAbsoluteAXPath: %@\n", axPath);
     
-    if (axPath == nil || [axPath rangeOfString:@"/AXApplication"].location != 0 || [axPath rangeOfString:@"//"].location != NSNotFound) {
+    if (axPath == nil || [axPath rangeOfString:@"/AXApplication"].location != 0 || [axPath rangeOfString:@"/!!!/"].location != NSNotFound) {
         return nil;
     }
     
@@ -1114,8 +1114,77 @@ const NSTimeInterval kModifierPause = 0.05;
         }
     }
     
+    if ([matchedNodes count] == 0)
+    {
+        [self dump:self.currentApplication withPrefix:@""];
+        
+        
+    }
+    
     return matchedNodes;
 }
+
+-(NSString*)descr:(NSDictionary*)dict butnot:(NSString*)n1
+{
+    NSMutableString* ret = [NSMutableString new];
+    
+    
+    
+    for(id key in dict)
+    {
+        [ret appendFormat:@" %@=%@",key,[dict objectForKey:key]];
+        
+        
+    }
+    
+    
+    
+    return ret;
+    
+}
+
+- (void)dump:(PFUIElement *)rootUIElement withPrefix:(NSString*)prefix
+{
+    NSArray *childUIElements = rootUIElement.AXChildren;
+    
+    NSMutableDictionary* counter = [NSMutableDictionary new];
+    
+    
+    
+    for (PFUIElement *uiElement in childUIElements) {
+        
+       NSString* AXRole= [uiElement.elementInfo valueForKey:@"AXRole"];
+        
+        
+        
+        NSNumber* current = [counter objectForKey:AXRole];
+        
+        if (current == nil)
+        {
+            current = [NSNumber numberWithInteger:0];
+            
+        }
+        else
+        {
+            current = [NSNumber numberWithInteger:([current integerValue] + 1)];
+            
+        }
+        
+        [counter setValue:current forKey:AXRole];
+        
+        NSString* newPrefix = [NSString stringWithFormat:@"%@/%@[%@]",prefix,AXRole,current];
+        
+        NSLog(@"%@ %@",newPrefix, [self descr:uiElement.elementInfo butnot:@"AXRole"]);
+        
+        
+        
+        [self dump:uiElement withPrefix:newPrefix];
+    }
+    
+    
+    
+}
+
 
 // Recursive helper method for findAllUsingAbsoluteAXPath:. 
 // Each iteration will pass a smaller pathComponents array and a different rootUIElement.
@@ -1129,6 +1198,23 @@ const NSTimeInterval kModifierPause = 0.05;
     }
     
     NSString *firstPathComponent = [axPathComponents objectAtIndex:0];
+    
+    if ((firstPathComponent == nil) || ([firstPathComponent isEqualToString:@""]))
+    {
+        
+        
+        NSMutableArray *childAXPathComponents = [axPathComponents mutableCopy];
+        [childAXPathComponents removeObjectAtIndex:0];
+        for (PFUIElement * sub in childUIElements) {
+            NSArray *recursivelyMatchedChildren = [self findAllUsingAXPathComponents:childAXPathComponents rootUIElement:sub];
+            if ([recursivelyMatchedChildren count] > 0) {
+                return recursivelyMatchedChildren;
+            }
+        }
+        
+    }
+    
+    
     NSDictionary *parsedComponent = [self parseRoleAndPredicateString:firstPathComponent];
     if (!parsedComponent || [parsedComponent count] == 0) {
         return @[];
