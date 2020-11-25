@@ -1116,6 +1116,7 @@ const NSTimeInterval kModifierPause = 0.05;
     
     if ([matchedNodes count] == 0)
     {
+        // wenn auch nichts gedumpt wird, dann wird schon die oberste Ebene nicht gefunden ( /AXApplication[@AXTitle='Name in Aktivitaetsanzeige'] )
         [self dump:self.currentApplication withPrefix:@""];
         
         
