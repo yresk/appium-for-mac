@@ -1190,19 +1190,7 @@ const NSTimeInterval kModifierPause = 0.05;
         
        NSString* AXRole= [uiElement.elementInfo valueForKey:@"AXRole"];
        
-        NSString* AXTitle= [uiElement.elementInfo valueForKey:@"AXTitle"];
-        
-        if (AXTitle)
-        {
-            
-            [regex enumerateMatchesInString:AXTitle options:0 range:NSMakeRange(0, [AXTitle length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
-                
-                [cont addObject:uiElement];
-                
-            }];
-            
-            
-        }
+       
         
         
         NSNumber* current = [counter objectForKey:AXRole];
@@ -1222,8 +1210,20 @@ const NSTimeInterval kModifierPause = 0.05;
         
         NSString* newPrefix = [NSString stringWithFormat:@"%@/%@[%@]",prefix,AXRole,current];
         
-        //
-        NSLog(@"%@ %@",newPrefix, [self descr:uiElement.elementInfo butnot:@"AXRole"]);
+        
+        
+        NSString* searchableString = [NSString stringWithFormat:@"%@ %@",newPrefix,[self descr:uiElement.elementInfo butnot:@"AXRole"]];
+        
+        
+       
+             [regex enumerateMatchesInString:searchableString options:0
+                                       range:NSMakeRange(0, [searchableString length])
+                                  usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
+                 
+                 [cont addObject:uiElement];
+                 
+             }];
+             
         
         
         
