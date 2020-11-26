@@ -602,6 +602,11 @@
 				LastTestingUpgradeCheck = 0720;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Appium;
+				TargetAttributes = {
+					3610348417A4990E00DB79AA = {
+						ProvisioningStyle = Manual;
+					};
+				};
 			};
 			buildConfigurationList = 3610348017A4990E00DB79AA /* Build configuration list for PBXProject "AppiumForMac" */;
 			compatibilityVersion = "Xcode 6.3";
@@ -834,7 +839,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks\"",
@@ -844,10 +851,11 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AppiumForMac/AppiumForMac-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.appium.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = AppiumForMac;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = app;
@@ -857,7 +865,10 @@
 		361034B817A4990F00DB79AA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks\"",
@@ -867,10 +878,11 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "AppiumForMac/AppiumForMac-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.appium.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = AppiumForMac;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = app;
