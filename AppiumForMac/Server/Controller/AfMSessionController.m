@@ -1116,6 +1116,39 @@ const NSTimeInterval kModifierPause = 0.05;
     
     if ([matchedNodes count] == 0)
     {
+        if ([axPathComponents count] > 0)
+        {
+            NSString* first = [axPathComponents objectAtIndex:0];
+            NSString* prefix = @"Wildcard['";
+            NSString* suffix = @"']";
+            if ([first hasPrefix:prefix] && [first hasSuffix:suffix])
+            {
+                NSRange range = NSMakeRange(prefix.length,first.length-(suffix.length+prefix.length));
+                NSString* wildcard = [first substringWithRange:range];
+                 
+                NSError *error = NULL;
+                NSRegularExpression *regex = [NSRegularExpression
+                    regularExpressionWithPattern:wildcard
+                    options:NSRegularExpressionCaseInsensitive
+                    error:&error];
+                
+                
+                NSMutableArray* mua = [NSMutableArray new];
+                
+                [self wildcard:self.currentApplication withRegEx:regex withContainer:mua withPrefix:@""];
+                
+                NSLog(@"%@",wildcard);
+                
+                if ([mua count] == 1)
+                {
+                    return mua;
+                }
+            }
+            
+        }
+            
+        
+        
         // wenn auch nichts gedumpt wird, dann wird schon die oberste Ebene nicht gefunden ( /AXApplication[@AXTitle='Name in Aktivitaetsanzeige'] )
         [self dump:self.currentApplication withPrefix:@""];
         
@@ -1143,6 +1176,63 @@ const NSTimeInterval kModifierPause = 0.05;
     return ret;
     
 }
+
+- (void)wildcard:(PFUIElement *)rootUIElement withRegEx:(NSRegularExpression*)regex withContainer:(NSMutableArray*)cont withPrefix:(NSString*)prefix
+{
+
+    NSArray *childUIElements = rootUIElement.AXChildren;
+    
+    NSMutableDictionary* counter = [NSMutableDictionary new];
+    
+    
+    
+    for (PFUIElement *uiElement in childUIElements) {
+        
+       NSString* AXRole= [uiElement.elementInfo valueForKey:@"AXRole"];
+       
+        NSString* AXTitle= [uiElement.elementInfo valueForKey:@"AXTitle"];
+        
+        if (AXTitle)
+        {
+            
+            [regex enumerateMatchesInString:AXTitle options:0 range:NSMakeRange(0, [AXTitle length]) usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
+                
+                [cont addObject:uiElement];
+                
+            }];
+            
+            
+        }
+        
+        
+        NSNumber* current = [counter objectForKey:AXRole];
+        
+        if (current == nil)
+        {
+            current = [NSNumber numberWithInteger:0];
+            
+        }
+        else
+        {
+            current = [NSNumber numberWithInteger:([current integerValue] + 1)];
+            
+        }
+        
+        [counter setValue:current forKey:AXRole];
+        
+        NSString* newPrefix = [NSString stringWithFormat:@"%@/%@[%@]",prefix,AXRole,current];
+        
+        //
+        NSLog(@"%@ %@",newPrefix, [self descr:uiElement.elementInfo butnot:@"AXRole"]);
+        
+        
+        
+        [self wildcard:uiElement withRegEx:regex withContainer:cont withPrefix:newPrefix];
+    }
+    
+    
+}
+
 
 - (void)dump:(PFUIElement *)rootUIElement withPrefix:(NSString*)prefix
 {
